@@ -12,11 +12,11 @@ def circe(artifact: String): ModuleID =
 def ciris(artifact: String): ModuleID = "is.cir" %% artifact % cirisVersion
 def http4s(artifact: String): ModuleID =
   "org.http4s" %% s"http4s-$artifact" % http4sVersion
-
+val circeGenericExtras = circe("generic-extras")
 val circeCore = circe("core")
 val circeGeneric = circe("generic")
 val cireParser = "io.circe" %% "circe-parser" % circeVersion
-
+val retry = "com.github.cb372" %% "cats-retry" % "3.1.0"
 val cirisCore = ciris("ciris")
 val catsEffect = "org.typelevel" %% "cats-effect" % catsEffectVersion
 val fs2 = "co.fs2" %% "fs2-core" % fs2Version
@@ -43,7 +43,9 @@ lazy val root = (project in file("."))
       circeGeneric,
       logback,
       catsEffect,
-      fs2
+      fs2,
+      circeGenericExtras,
+      retry
     )
   )
 

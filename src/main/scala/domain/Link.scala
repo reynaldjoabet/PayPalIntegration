@@ -1,7 +1,8 @@
 package domain
 import io.circe.generic.semiauto.deriveCodec
-import io.circe.Encoder
 import org.http4s.EntityEncoder
+import io.circe.Codec
+
 final case class Link(
     href: String,
     rel: String,
@@ -9,6 +10,6 @@ final case class Link(
 )
 
 object Link {
-  implicit val linkCodec = deriveCodec[Link]
+  implicit val linkCodec: Codec[Link] = deriveCodec[Link]
 
 }

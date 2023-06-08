@@ -12,27 +12,30 @@ import org.http4s.circe.CirceEntityCodec._
 import domain._
 import config._
 import cats.effect.IO
+import org.typelevel.log4cats.Logger
+import retry.RetryPolicy
+import cats.syntax.all._
+import cats.effect.std.Console
 
-final case class PayPalApiRoutes(
-    clientService: PayPalClientService[IO],
-    client: Client[IO]
-) extends Http4sDsl[IO] {
+final case class PayPalApiRoutes[F[_]: Async: Logger: Console](
+    clientService: PayPalClientService[F],
+    client: Client[F],
+    credentials:PayPalCredentials,
+    endpointUrl: EndpointUrl,
+    policy: RetryPolicy[F]
+) extends Http4sDsl[F] {
+  val routes: HttpRoutes[F] = HttpRoutes.of[F] {
 
-  val routes: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case request @ POST -> Root / "create_order" =>
       (for {
-        clientSecret <- PayPalClientSecret.payPalClientSecret.load[IO]
-        clientId <- PayPalClientId.payPalClientId.load[IO]
-        endpointUrl <- EndpointUrl.endpointUrl.load[IO]
         accessTokenResponse <- clientService
           .fetchAccessToken(
             client,
-            clientId.value,
-            clientSecret.value,
-            endpointUrl.value
+            endpointUrl.value,
+            credentials
           )
         // .flatTap(IO.println)
-        order <- clientService.createOrder(
+        order <- clientService.createOrderWithRetry(
           client,
           accessTokenResponse.access_token,
           endpointUrl.value,
@@ -48,39 +51,38 @@ final case class PayPalApiRoutes(
                 )
               )
             )
-          )
+          ),
+        policy
         )
       } yield order)
         .flatMap(data => Ok(data)) // apply method produces F[Response[G]]
         .recoverWith { case exception =>
-          BadRequest(IO(exception.toString()).flatTap(IO.println))
+          BadRequest(exception.toString()).flatTap(Console[F].println)
         }
 
-    case request @ POST -> Root / "complete_order" =>
+    case request @ POST -> Root / "capture_order" =>
       (for {
-        payload <- request.as[CompleteOrderRequest] // .flatTap(IO.println)
-        clientSecret <- PayPalClientSecret.payPalClientSecret.load[IO]
-        clientId <- PayPalClientId.payPalClientId.load[IO]
-        endpointUrl <- EndpointUrl.endpointUrl.load[IO]
+        payload <- request.as[CapturePaymentRequest] // .flatTap(IO.println)
         accessTokenResponse <- clientService
           .fetchAccessToken(
             client,
-            clientId.value,
-            clientSecret.value,
-            endpointUrl.value
+            endpointUrl.value,
+            credentials
           )
-          .flatTap(IO.println)
-        orderResponse <- clientService.completeOrder(
+        // .flatTap(.println)
+        orderResponse <- clientService.capturePaymentWithRetry(
           client,
           accessTokenResponse.access_token,
           endpointUrl.value,
           payload.order_id,
-          payload.intent
+          payload.intent,
+          policy
         )
       } yield orderResponse)
         .flatMap(data => Ok(data)) // apply method produces F[Response[G]]
         .recoverWith { case exception =>
-          BadRequest(exception.toString()).flatTap(IO.println)
+          BadRequest(exception.getMessage()).flatTap(Console[F].println)
         }
   }
+
 }
