@@ -9,4 +9,3 @@ addSbtPlugin("org.scalameta" % "sbt-metals" % "0.11.12")
 // JDI tools are used by the debug adapter server.
 
 addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.1.1")
-

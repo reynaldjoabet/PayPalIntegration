@@ -1,8 +1,10 @@
 package domain
+
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.deriveCodec
-import io.circe.{Encoder, Decoder}
-import org.http4s.EntityEncoder
 import org.http4s.EntityDecoder
+import org.http4s.EntityEncoder
+
 sealed abstract class Intent
 object Intent {
 
@@ -17,6 +19,8 @@ object Intent {
     case "CAPTURE"   => Right(CAPTURE)
     case "AUTHORIZE" => Right(AUTHORIZE)
   }
-  final case object CAPTURE extends Intent
+
+  final case object CAPTURE   extends Intent
   final case object AUTHORIZE extends Intent
+
 }
