@@ -6,7 +6,7 @@ val http4sVersion     = "0.23.16"
 val cirisVersion      = "3.1.0"
 val circeVersion      = "0.14.3"
 val catsEffectVersion = "3.4.8"
-val fs2Version        = "3.6.1"
+val fs2Version        = "3.10.2"
 
 def circe(artifact: String): ModuleID =
   "io.circe" %% s"circe-$artifact" % circeVersion
