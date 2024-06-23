@@ -3,10 +3,12 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "2.13.10"
 
 val http4sVersion     = "0.23.27"
-val cirisVersion      = "3.1.0"
-val circeVersion      = "0.14.3"
+val cirisVersion      = "3.6.0"
+val circeVersion      = "0.14.8"
+
+
 val catsEffectVersion = "3.4.8"
-val fs2Version        = "3.6.1"
+val fs2Version        = "3.10.2"
 
 def circe(artifact: String): ModuleID =
   "io.circe" %% s"circe-$artifact" % circeVersion
@@ -20,7 +22,7 @@ val circeGenericExtras = circe("generic-extras")
 val circeCore          = circe("core")
 val circeGeneric       = circe("generic")
 val cireParser         = "io.circe"         %% "circe-parser" % circeVersion
-val retry              = "com.github.cb372" %% "cats-retry"   % "3.1.0"
+val retry              = "com.github.cb372" %% "cats-retry"   % "3.1.3"
 val cirisCore          = ciris("ciris")
 val catsEffect         = "org.typelevel"    %% "cats-effect"  % catsEffectVersion
 val fs2                = "co.fs2"           %% "fs2-core"     % fs2Version
@@ -30,7 +32,7 @@ val http4sServer = http4s("ember-server")
 val http4sClient = http4s("ember-client")
 val http4sCirce  = http4s("circe")
 
-val logbackVersion = "1.4.5"
+val logbackVersion = "1.4.14"
 
 val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
