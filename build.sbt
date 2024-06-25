@@ -2,9 +2,9 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.13"
 
-val http4sVersion     = "0.23.27"
-val cirisVersion      = "3.6.0"
-val circeVersion      = "0.14.8"
+val http4sVersion = "0.23.27"
+val cirisVersion  = "3.6.0"
+val circeVersion  = "0.14.8"
 
 val catsEffectVersion = "3.4.11"
 val fs2Version        = "3.10.2"
@@ -31,7 +31,7 @@ val http4sServer = http4s("ember-server")
 val http4sClient = http4s("ember-client")
 val http4sCirce  = http4s("circe")
 
-val logbackVersion = "1.4.14"
+val logbackVersion = "1.5.6"
 
 val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
